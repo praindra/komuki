@@ -2,15 +2,8 @@ const User = require('../models/User');
 const { generateToken } = require('../utils/jwt')
 const jwt = require('jsonwebtoken');
 
-// Generate JWT
-// const generateToken = (id) => {
-//     return jwt.sign({ id }, process.env.JWT_SECRET, {
-//         expiresIn: '1h',
-//     });
-// };
-
 // @route   POST api/auth/login
-// @desc    Admin Login
+// @desc    Admin/Operator Login
 // @access  Public
 exports.adminLogin = async (req, res) => {
     const { username, password } = req.body;
@@ -22,6 +15,7 @@ exports.adminLogin = async (req, res) => {
             res.json({
                 _id: user._id,
                 username: user.username,
+                role: user.role,
                 token: generateToken(user._id), 
             });
         } else {
@@ -33,22 +27,32 @@ exports.adminLogin = async (req, res) => {
     }
 };
 
-
 exports.createInitialAdmin = async () => {
     try {
+        // Create admin user
         const adminExists = await User.findOne({ username: process.env.ADMIN_USERNAME });
         if (!adminExists) {
             const adminUser = new User({
                 username: process.env.ADMIN_USERNAME,
-                password: process.env.ADMIN_PASSWORD, // Password akan di-hash oleh pre-save hook
+                password: process.env.ADMIN_PASSWORD,
                 role: 'admin'
             });
             await adminUser.save();
             console.log('Initial admin user created.');
         }
+
+        // Create operator user
+        const operatorExists = await User.findOne({ username: process.env.OPERATOR_USERNAME });
+        if (!operatorExists) {
+            const operatorUser = new User({
+                username: process.env.OPERATOR_USERNAME,
+                password: process.env.OPERATOR_PASSWORD,
+                role: 'operator'
+            });
+            await operatorUser.save();
+            console.log('Initial operator user created.');
+        }
     } catch (err) {
-        console.error('Error creating initial admin:', err.message);
+        console.error('Error creating initial users:', err.message);
     }
 };
-// Panggil fungsi ini di server.js setelah koneksi DB
-// createInitialAdmin();

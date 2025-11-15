@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const doctorController = require('../controllers/doctorController');
-const { protect, admin } = require('../middleware/authMiddleware');
+const { protect, admin, adminOrOperator } = require('../middleware/authMiddleware');
 
 router.route('/')
-    .get(doctorController.getAllDoctors) // Bisa diakses publik untuk halaman user
-    .post(protect, admin, doctorController.createDoctor); // Hanya admin
+    .get(doctorController.getAllDoctors) // Public
+    .post(protect, adminOrOperator, doctorController.createDoctor);
 
 router.route('/:id')
-    .put(protect, admin, doctorController.updateDoctor) // Hanya admin
-    .delete(protect, admin, doctorController.deleteDoctor); // Hanya admin
+    .put(protect, adminOrOperator, doctorController.updateDoctor)
+    .delete(protect, adminOrOperator, doctorController.deleteDoctor);
 
-router.post('/notify-vacation', protect, admin, doctorController.sendVacationNotification); // Hanya admin
+router.post('/notify-vacation', protect, adminOrOperator, doctorController.sendVacationNotification);
 
 module.exports = router;

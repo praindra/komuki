@@ -1,4 +1,4 @@
-const { verifyToken } = require('../utils/jwt'); // Import dari jwt.js
+const { verifyToken } = require('../utils/jwt');
 const User = require('../models/User');
 
 const protect = async (req, res, next) => {
@@ -6,13 +6,8 @@ const protect = async (req, res, next) => {
 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
-            // Get token from header
             token = req.headers.authorization.split(' ')[1];
-
-            // Verify token
-            const decoded = verifyToken(token); // Panggil verifyToken dari utils/jwt.js
-
-            // Get user from token
+            const decoded = verifyToken(token);
             req.user = await User.findById(decoded.id).select('-password');
             next();
         } catch (error) {
@@ -34,4 +29,12 @@ const admin = (req, res, next) => {
     }
 };
 
-module.exports = { protect, admin };
+const adminOrOperator = (req, res, next) => {
+    if (req.user && (req.user.role === 'admin' || req.user.role === 'operator')) {
+        next();
+    } else {
+        res.status(403).json({ msg: 'Tidak terotorisasi.' });
+    }
+};
+
+module.exports = { protect, admin, adminOrOperator };
