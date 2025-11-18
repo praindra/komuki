@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Form from './pages/Form';
 import Cancel from './pages/Cancel';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminReservations from './pages/AdminReservations';
@@ -15,6 +17,7 @@ import OperatorQueues from './pages/OperatorQueues';
 import OperatorQuota from './pages/OperatorQuota';
 import PrivateRoute from './components/PrivateRoute';
 import OperatorPrivateRoute from './components/OperatorPrivateRoute';
+import UserPrivateRoute from './components/UserPrivateRoute';
 
 function App() {
     return (
@@ -22,8 +25,10 @@ function App() {
             <Routes>
                 {/* User Routes */}
                 <Route path="/" element={<Home />} />
-                <Route path="/form" element={<Form />} />
-                <Route path="/cancel" element={<Cancel />} />
+                <Route path="/form" element={<UserPrivateRoute element={<Form />} />} />
+                <Route path="/cancel" element={<UserPrivateRoute element={<Cancel />} />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
                 {/* Admin Routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />

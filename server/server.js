@@ -16,7 +16,7 @@ const adminRoutes = require('./routes/adminRoutes');
 // Import Utilities & Middleware
 const connectDB = require('./config/db');
 const { createInitialAdmin } = require('./controllers/authController');
-const { notFound, errorHandler } = require('./utils/errorHandler'); // Import error handlers
+const { notFound, errorHandler } = require('./utils/errorHandler');
 
 dotenv.config();
 
