@@ -18,6 +18,7 @@ import OperatorQuota from './pages/OperatorQuota';
 import PrivateRoute from './components/PrivateRoute';
 import OperatorPrivateRoute from './components/OperatorPrivateRoute';
 import UserPrivateRoute from './components/UserPrivateRoute';
+import History from './pages/History';
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/form" element={<UserPrivateRoute element={<Form />} />} />
                 <Route path="/cancel" element={<UserPrivateRoute element={<Cancel />} />} />
+                <Route path="/history" element={<UserPrivateRoute element={<History />} />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 

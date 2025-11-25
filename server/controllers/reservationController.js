@@ -86,7 +86,7 @@ exports.createReservation = async (req, res) => {
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
-    }
+     }
 };
 
 // @route   PUT api/reservations/cancel
@@ -206,6 +206,31 @@ exports.deleteReservationsByDate = async (req, res) => {
         }
 
         res.json({ msg: `${result.deletedCount} reservasi berhasil dihapus.` });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+};
+
+// @route   GET api/reservations/my-history
+// @desc    Get reservation history for logged-in user
+// @access  Private (Authenticated User)
+exports.getMyHistory = async (req, res) => {
+    try {
+        const username = req.user.username;
+        if (!username) {
+            return res.status(400).json({ msg: 'Invalid user data.' });
+        }
+
+        // Match reservations where phoneNumber or patientName equals username
+        const reservations = await Reservation.find({
+            $or: [
+                { phoneNumber: username },
+                { patientName: username }
+            ]
+        }).populate('doctor', 'name').sort({ createdAt: -1 });
+
+        res.json(reservations);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');

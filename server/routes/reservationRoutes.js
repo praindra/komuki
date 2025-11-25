@@ -18,6 +18,11 @@ router.put('/cancel', reservationController.cancelReservation);
 // @access  Public
 router.get('/daily-stats', reservationController.getDailyStats);
 
+// @route   GET api/reservations/my-history
+// @desc    Get reservation history for logged-in user
+// @access  Private (Authenticated User)
+router.get('/my-history', protect, reservationController.getMyHistory);
+
 // ADMIN ROUTES (Protected by 'protect' and 'admin' middleware)
 
 // @route   GET api/reservations
