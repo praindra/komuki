@@ -41,7 +41,7 @@ const Login = () => {
 
             if (!response) throw new Error('Server menolak semua varian payload (cek credential atau backend)');
 
-            localStorage.setItem('adminToken', response.data.token);
+            localStorage.setItem('userToken', response.data.token);
             localStorage.setItem('userRole', response.data.role);
             localStorage.setItem('username', response.data.username);
 
@@ -68,13 +68,13 @@ const Login = () => {
             <main style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem', background: '#f4f4f4' }}>
                 <div style={{ background: 'white', padding: '2.5rem', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', maxWidth: '450px', width: '100%' }}>
                     <h2 style={{ marginBottom: '1.5rem', textAlign: 'center', color: '#333' }}>Login</h2>
-                    
+
                     {error && (
-                        <div style={{ 
-                            background: '#f8d7da', 
-                            color: '#721c24', 
-                            padding: '12px', 
-                            borderRadius: '6px', 
+                        <div style={{
+                            background: '#f8d7da',
+                            color: '#721c24',
+                            padding: '12px',
+                            borderRadius: '6px',
                             marginBottom: '1.5rem',
                             border: '1px solid #f5c6cb'
                         }}>
@@ -87,19 +87,19 @@ const Login = () => {
                             <label style={{ display: 'block', marginBottom: '0.5rem', color: '#555', fontWeight: '500' }}>
                                 Username atau Email
                             </label>
-                            <input 
-                                type="text" 
-                                value={usernameOrEmail} 
-                                onChange={(e) => setUsernameOrEmail(e.target.value)} 
-                                required 
-                                style={{ 
-                                    width: '100%', 
-                                    padding: '12px', 
-                                    border: '1px solid #ddd', 
+                            <input
+                                type="text"
+                                value={usernameOrEmail}
+                                onChange={(e) => setUsernameOrEmail(e.target.value)}
+                                required
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    border: '1px solid #ddd',
                                     borderRadius: '6px',
                                     fontSize: '1rem',
                                     transition: 'border-color 0.3s'
-                                }} 
+                                }}
                                 onFocus={(e) => e.target.style.borderColor = '#007bff'}
                                 onBlur={(e) => e.target.style.borderColor = '#ddd'}
                                 placeholder="Masukkan username atau email"
@@ -110,36 +110,36 @@ const Login = () => {
                             <label style={{ display: 'block', marginBottom: '0.5rem', color: '#555', fontWeight: '500' }}>
                                 Password
                             </label>
-                            <input 
-                                type="password" 
-                                value={password} 
-                                onChange={(e) => setPassword(e.target.value)} 
-                                required 
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
                                 minLength="6"
-                                style={{ 
-                                    width: '100%', 
-                                    padding: '12px', 
-                                    border: '1px solid #ddd', 
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    border: '1px solid #ddd',
                                     borderRadius: '6px',
                                     fontSize: '1rem',
                                     transition: 'border-color 0.3s'
-                                }} 
+                                }}
                                 onFocus={(e) => e.target.style.borderColor = '#007bff'}
                                 onBlur={(e) => e.target.style.borderColor = '#ddd'}
                                 placeholder="Masukkan password"
                             />
                         </div>
 
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             disabled={loading}
-                            style={{ 
-                                width: '100%', 
-                                padding: '14px', 
-                                background: loading ? '#ccc' : '#007bff', 
-                                color: 'white', 
-                                border: 'none', 
-                                borderRadius: '6px', 
+                            style={{
+                                width: '100%',
+                                padding: '14px',
+                                background: loading ? '#ccc' : '#007bff',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
                                 cursor: loading ? 'not-allowed' : 'pointer',
                                 fontSize: '1rem',
                                 fontWeight: '600',

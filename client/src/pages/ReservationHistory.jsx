@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import html2canvas from 'html2canvas';
 
 const statusColors = {
     confirmed: '#28a745',
@@ -17,27 +18,44 @@ const ReservationHistory = () => {
     const [page, setPage] = useState(1);
     const [total, setTotal] = useState(0);
     const [limit] = useState(5);
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [statusFilter, setStatusFilter] = useState('');
-    const [cancellingId, setCancellingId] = useState(null);
+    const [statusFilter, setStatusFilter] = useState('all');
+
+    const handleCancel = async (reservationId) => {
+        if (!window.confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')) {
+            return;
+        }
+        try {
+            const token = localStorage.getItem('userToken');
+            await axios.put(
+                `${import.meta.env.VITE_SERVER_URL}/api/users/reservations/cancel`,
+                { reservationId },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            // Refresh the reservations list
+            window.location.reload();
+        } catch (err) {
+            console.error('Error canceling reservation:', err);
+            alert('Gagal membatalkan reservasi. Silakan coba lagi.');
+        }
+    };
 
     useEffect(() => {
         const fetchReservations = async () => {
             setLoading(true);
             setError(null);
             try {
-                const token = localStorage.getItem('adminToken');
+                const token = localStorage.getItem('userToken');
                 const params = {
                     page,
                     limit,
                 };
-                if (startDate) params.startDate = startDate;
-                if (endDate) params.endDate = endDate;
-                if (statusFilter) params.status = statusFilter;
-
+                if (statusFilter !== 'all') params.status = statusFilter;
                 const response = await axios.get(
-                    import.meta.env.VITE_SERVER_URL + '/api/users/reservations',
+                    import.meta.env.VITE_SERVER_URL + '/api/reservations/my-history',
                     {
                         headers: {
                             Authorization: 'Bearer ' + token,
@@ -45,9 +63,8 @@ const ReservationHistory = () => {
                         params,
                     }
                 );
-
-                setReservations(response.data.reservations);
-                setTotal(response.data.total);
+                setReservations(response.data?.reservations || []);
+                setTotal(response.data?.total || 0);
             } catch (err) {
                 console.error('Error fetching reservation history:', err);
                 setError('Gagal memuat riwayat reservasi. Silakan coba lagi.');
@@ -56,34 +73,11 @@ const ReservationHistory = () => {
             }
         };
         fetchReservations();
-    }, [page, startDate, endDate, statusFilter]);
+    }, [page, statusFilter]);
 
     const totalPages = Math.ceil(total / limit);
 
-    const handleCancel = async (reservationId) => {
-        if (!window.confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')) return;
-
-        setCancellingId(reservationId);
-        setError(null);
-        try {
-            const token = localStorage.getItem('adminToken');
-            await axios.put(
-                import.meta.env.VITE_SERVER_URL + '/api/users/reservations/cancel',
-                { reservationId: reservationId },
-                {
-                    headers: {
-                        Authorization: 'Bearer ' + token,
-                    },
-                }
-            );
-            fetchReservations();
-        } catch (err) {
-            console.error('Error cancelling reservation:', err);
-            setError('Gagal membatalkan reservasi. Silakan coba lagi.');
-        } finally {
-            setCancellingId(null);
-        }
-    };
+    const safeReservations = reservations || [];
 
     return (
         <div>
@@ -110,30 +104,13 @@ const ReservationHistory = () => {
                     }}
                 >
                     <div>
-                        <label>Tanggal Mulai: </label>
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label>Tanggal Akhir: </label>
-                        <input
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                        />
-                    </div>
-                    <div>
                         <label>Status: </label>
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
                         >
-                            <option value="">Semua</option>
+                            <option value="all">Semua</option>
                             <option value="pending">Pending</option>
-                            <option value="confirmed">Confirmed</option>
                             <option value="completed">Completed</option>
                             <option value="cancelled">Cancelled</option>
                         </select>
@@ -173,7 +150,7 @@ const ReservationHistory = () => {
                     </div>
                 ) : error ? (
                     <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>
-                ) : reservations.length === 0 ? (
+                ) : safeReservations.length === 0 ? (
                     <div
                         style={{
                             textAlign: 'center',
@@ -189,7 +166,7 @@ const ReservationHistory = () => {
                 ) : (
                     <>
                         <ul style={{ listStyle: 'none', padding: 0 }}>
-                            {reservations.map((reservation) => {
+                            {safeReservations.map((reservation) => {
                                 const status = (reservation.status || '').toLowerCase();
                                 return (
                                     <li
@@ -205,18 +182,11 @@ const ReservationHistory = () => {
                                             gap: '0.5rem',
                                         }}
                                     >
-                                        <div style={{ fontWeight: '700', fontSize: '1.1rem' }}>
-                                            Dokter: {reservation.doctor?.name || 'Tidak diketahui'}
+                                        <div style={{ fontWeight: '700', fontSize: '1.3rem' }}>
+                                            {reservation.patientName || 'Tidak diketahui'}
                                         </div>
-                                        <div>
-                                            Tanggal:{' '}
-                                            {new Date(
-                                                reservation.appointmentDate || reservation.date
-                                            ).toLocaleDateString()}
-                                        </div>
-                                        <div>
-                                            Waktu: {reservation.time || 'Tidak tersedia'}
-                                        </div>
+                                        <div>No Antrian: {reservation.queueNumber || 'Tidak tersedia'}</div>
+                                        <div>ID Reservasi: {reservation.reservationId || 'Tidak tersedia'}</div>
                                         <div>
                                             Status:{' '}
                                             <span
@@ -229,28 +199,83 @@ const ReservationHistory = () => {
                                                 {reservation.status || 'Tidak diketahui'}
                                             </span>
                                         </div>
-                                        {reservation.notes && (
-                                            <div>Catatan: {reservation.notes}</div>
-                                        )}
-                                        {status !== 'cancelled' && (
+                                        <div>Dokter: {reservation.doctor?.name || 'Tidak diketahui'}</div>
+                                        <div>
+                                            Tanggal Periksa:{' '}
+                                            {new Date(
+                                                reservation.appointmentDate || reservation.date
+                                            ).toLocaleDateString()}
+                                        </div>
+                                        <div>
+                                            Tanggal Lahir:{' '}
+                                            {reservation.patientDOB ? new Date(reservation.patientDOB).toLocaleDateString() : 'Tidak tersedia'}
+                                        </div>
+                                        <div>No HP: {reservation.phoneNumber || 'Tidak tersedia'}</div>
+                                        <div>Wali: {reservation.parentName || 'Tidak tersedia'}</div>
+                                        <div>
+                                            Dibuat:{' '}
+                                            {new Date(reservation.createdAt).toLocaleDateString()}
+                                        </div>
+                                        <div id={`reservation-details-${reservation._id}`} style={{ border: '1px solid #ccc', padding: '2rem', maxWidth: '600px', margin: '2rem auto', textAlign: 'center', display: 'none' }}>
+                                            <h3>Detail Reservasi Anda:</h3>
+                                            <p><strong>Poli Anak</strong></p>
+                                            <p>Nama Dokter: {reservation.doctor?.name || 'Menyesuaikan jadwal'}</p>
+                                            <p>No Antrian: {reservation.queueNumber}</p>
+                                            <p>ID Antrian: {reservation.reservationId}</p>
+                                            <p>Nama Pasien: {reservation.patientName}</p>
+                                            <p>Tanggal Lahir Pasien: {reservation.patientDOB ? new Date(reservation.patientDOB).toLocaleDateString() : 'Tidak tersedia'}</p>
+                                            <p>Status: {reservation.status || 'Tidak diketahui'}</p>
+                                            <p>Terima kasih telah menunggu!</p>
+                                            <p>Tanggal Pemeriksaan: {new Date(reservation.appointmentDate || reservation.date).toLocaleDateString()}</p>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
                                             <button
-                                                disabled={cancellingId === reservation._id}
-                                                onClick={() => handleCancel(reservation._id)}
+                                                onClick={() => {
+                                                    const input = document.getElementById(`reservation-details-${reservation._id}`);
+                                                    const clone = input.cloneNode(true);
+                                                    clone.style.display = 'block';
+                                                    clone.style.position = 'absolute';
+                                                    clone.style.left = '-9999px';
+                                                    clone.style.top = '-9999px';
+                                                    document.body.appendChild(clone);
+                                                    html2canvas(clone).then((canvas) => {
+                                                        const imgData = canvas.toDataURL('image/png');
+                                                        const link = document.createElement('a');
+                                                        link.href = imgData;
+                                                        link.download = `reservasi_${reservation.patientName}.png`;
+                                                        document.body.appendChild(link);
+                                                        link.click();
+                                                        document.body.removeChild(link);
+                                                        document.body.removeChild(clone);
+                                                    });
+                                                }}
                                                 style={{
-                                                    marginTop: '0.5rem',
                                                     padding: '0.5rem 1rem',
-                                                    backgroundColor: '#dc3545',
+                                                    backgroundColor: '#28a745',
                                                     color: '#fff',
                                                     border: 'none',
                                                     borderRadius: '4px',
                                                     cursor: 'pointer',
                                                 }}
                                             >
-                                                {cancellingId === reservation._id
-                                                    ? 'Membatalkan...'
-                                                    : 'Batalkan'}
+                                                Download Bukti Reservasi
                                             </button>
-                                        )}
+                                            {status === 'pending' && (
+                                                <button
+                                                    onClick={() => handleCancel(reservation._id)}
+                                                    style={{
+                                                        padding: '0.5rem 1rem',
+                                                        backgroundColor: '#dc3545',
+                                                        color: '#fff',
+                                                        border: 'none',
+                                                        borderRadius: '4px',
+                                                        cursor: 'pointer',
+                                                    }}
+                                                >
+                                                    Batalkan
+                                                </button>
+                                            )}
+                                        </div>
                                     </li>
                                 );
                             })}

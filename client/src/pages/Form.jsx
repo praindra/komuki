@@ -26,7 +26,12 @@ const Form = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/reservations`, formData);
+            const token = localStorage.getItem('userToken');
+            const config = {};
+            if (token) {
+                config.headers = { Authorization: `Bearer ${token}` };
+            }
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/reservations`, formData, config);
             setSubmissionResult(response.data);
             setPopupMessage('Reservasi berhasil!');
             setPopupType('success');

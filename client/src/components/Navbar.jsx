@@ -4,10 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const navigate = useNavigate();
-    const token = localStorage.getItem('adminToken');
+    const token = localStorage.getItem('userToken') || localStorage.getItem('adminToken');
     const username = localStorage.getItem('username');
 
     const handleLogout = () => {
+        localStorage.removeItem('userToken');
         localStorage.removeItem('adminToken');
         localStorage.removeItem('userRole');
         localStorage.removeItem('username');
@@ -24,24 +25,25 @@ const Navbar = () => {
                 {token && (
                     <>
                         <li><Link to="/form" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Formulir</Link></li>
-                        <li><Link to="/cancel" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Batalkan</Link></li>
+                        <li><Link to="/history" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Riwayat Reservasi</Link></li>
+                        <li><Link to="/profile" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Profil</Link></li>
                     </>
                 )}
-                
+
                 {token ? (
                     <>
                         <li style={{ color: 'white', fontWeight: '500' }}>
                             Halo, {username}
                         </li>
                         <li>
-                            <button 
+                            <button
                                 onClick={handleLogout}
-                                style={{ 
-                                    background: '#dc3545', 
-                                    color: 'white', 
-                                    border: 'none', 
-                                    padding: '8px 16px', 
-                                    borderRadius: '6px', 
+                                style={{
+                                    background: '#dc3545',
+                                    color: 'white',
+                                    border: 'none',
+                                    padding: '8px 16px',
+                                    borderRadius: '6px',
                                     cursor: 'pointer',
                                     fontWeight: '500'
                                 }}
@@ -54,13 +56,13 @@ const Navbar = () => {
                     <>
                         <li><Link to="/login" style={{ color: 'white', textDecoration: 'none', fontWeight: '500' }}>Login</Link></li>
                         <li>
-                            <Link 
-                                to="/register" 
-                                style={{ 
-                                    background: '#28a745', 
-                                    color: 'white', 
-                                    padding: '8px 16px', 
-                                    borderRadius: '6px', 
+                            <Link
+                                to="/register"
+                                style={{
+                                    background: '#28a745',
+                                    color: 'white',
+                                    padding: '8px 16px',
+                                    borderRadius: '6px',
                                     textDecoration: 'none',
                                     fontWeight: '500',
                                     display: 'inline-block'

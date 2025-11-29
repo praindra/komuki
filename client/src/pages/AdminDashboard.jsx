@@ -2,7 +2,25 @@ import React, { useState, useEffect } from 'react';
 import AdminNavbar from '../components/AdminNavbar';
 import axios from 'axios';
 import * as adminService from '../services/adminService';
-// import { Bar } from 'react-chartjs-2'; // Anda akan memerlukan chart.js dan react-chartjs-2
+import { Bar } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    BarElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
 const AdminDashboard = () => {
     const [stats, setStats] = useState({
@@ -75,8 +93,11 @@ const AdminDashboard = () => {
 
                 <section className="queue-chart">
                     <h3>Grafik Antrian (Harian/Mingguan)</h3>
-                    {/* {stats.queueChartData.labels && <Bar data={stats.queueChartData} />} */}
-                    <p>Grafik akan ditampilkan di sini (memerlukan library Chart.js).</p>
+                    {stats.queueChartData.labels && stats.queueChartData.labels.length > 0 ? (
+                        <Bar data={stats.queueChartData} />
+                    ) : (
+                        <p>Data grafik belum tersedia.</p>
+                    )}
                 </section>
             </main>
         </div>

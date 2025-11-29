@@ -2,11 +2,11 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 const UserPrivateRoute = ({ element }) => {
-    const token = localStorage.getItem('adminToken');
+    const token = localStorage.getItem('userToken');
     const role = localStorage.getItem('userRole');
 
-    // Only logged-in users (admin, operator, or user) can access user routes like form
-    if (token && (role === 'admin' || role === 'operator' || role === 'user')) {
+    // Only users with 'user' role can access user routes like form
+    if (token && role === 'user') {
         return element;
     }
 

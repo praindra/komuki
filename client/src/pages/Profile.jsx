@@ -18,6 +18,12 @@ const Profile = () => {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
+    const [savedProfile, setSavedProfile] = useState({
+        fullName: '',
+        phoneNumber: '',
+        gender: '',
+        dateOfBirth: ''
+    });
 
     useEffect(() => {
         fetchProfile();
@@ -25,12 +31,12 @@ const Profile = () => {
 
     const fetchProfile = async () => {
         try {
-            const token = localStorage.getItem('adminToken');
+            const token = localStorage.getItem('userToken');
             const response = await axios.get(
                 `${import.meta.env.VITE_SERVER_URL}/api/users/profile`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            
+
             const data = response.data;
             setProfile({
                 username: data.username || '',
@@ -58,8 +64,8 @@ const Profile = () => {
         setMessage({ type: '', text: '' });
 
         try {
-            const token = localStorage.getItem('adminToken');
-            await axios.put(
+            const token = localStorage.getItem('userToken');
+            const response = await axios.put(
                 `${import.meta.env.VITE_SERVER_URL}/api/users/profile`,
                 {
                     fullName: profile.fullName,
@@ -70,6 +76,17 @@ const Profile = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
+            const updatedUser = response.data;
+
+            // Update local state with the new data
+            setProfile({
+                username: updatedUser.username || '',
+                email: updatedUser.email || '',
+                fullName: updatedUser.fullName || '',
+                phoneNumber: updatedUser.phoneNumber || '',
+                gender: updatedUser.gender || '',
+                dateOfBirth: updatedUser.dateOfBirth ? new Date(updatedUser.dateOfBirth).toISOString().split('T')[0] : ''
+            });
             setMessage({ type: 'success', text: 'Profil berhasil diperbarui!' });
             setTimeout(() => setMessage({ type: '', text: '' }), 3000);
         } catch (error) {
@@ -120,10 +137,10 @@ const Profile = () => {
                             type="text"
                             value={profile.username}
                             disabled
-                            style={{ 
-                                width: '100%', 
-                                padding: '10px', 
-                                border: '1px solid #ddd', 
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                border: '1px solid #ddd',
                                 borderRadius: '6px',
                                 background: '#f5f5f5',
                                 cursor: 'not-allowed'
@@ -140,10 +157,10 @@ const Profile = () => {
                             type="email"
                             value={profile.email}
                             disabled
-                            style={{ 
-                                width: '100%', 
-                                padding: '10px', 
-                                border: '1px solid #ddd', 
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                border: '1px solid #ddd',
                                 borderRadius: '6px',
                                 background: '#f5f5f5',
                                 cursor: 'not-allowed'
@@ -161,14 +178,19 @@ const Profile = () => {
                             name="fullName"
                             value={profile.fullName}
                             onChange={handleChange}
-                            style={{ 
-                                width: '100%', 
-                                padding: '10px', 
-                                border: '1px solid #ddd', 
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                border: '1px solid #ddd',
                                 borderRadius: '6px'
                             }}
                             placeholder="Masukkan nama lengkap"
                         />
+                        {profile.fullName && (
+                            <small style={{ color: '#28a745', marginTop: '0.25rem', display: 'block' }}>
+                                ✓ Nama lengkap: {profile.fullName}
+                            </small>
+                        )}
                     </div>
 
                     <div>
@@ -180,14 +202,19 @@ const Profile = () => {
                             name="phoneNumber"
                             value={profile.phoneNumber}
                             onChange={handleChange}
-                            style={{ 
-                                width: '100%', 
-                                padding: '10px', 
-                                border: '1px solid #ddd', 
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                border: '1px solid #ddd',
                                 borderRadius: '6px'
                             }}
                             placeholder="Contoh: 081234567890"
                         />
+                        {profile.phoneNumber && (
+                            <small style={{ color: '#28a745', marginTop: '0.25rem', display: 'block' }}>
+                                ✓ Nomor telepon: {profile.phoneNumber}
+                            </small>
+                        )}
                     </div>
 
                     <div>
@@ -198,10 +225,10 @@ const Profile = () => {
                             name="gender"
                             value={profile.gender}
                             onChange={handleChange}
-                            style={{ 
-                                width: '100%', 
-                                padding: '10px', 
-                                border: '1px solid #ddd', 
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                border: '1px solid #ddd',
                                 borderRadius: '6px'
                             }}
                         >
@@ -209,6 +236,11 @@ const Profile = () => {
                             <option value="Laki-laki">Laki-laki</option>
                             <option value="Perempuan">Perempuan</option>
                         </select>
+                        {profile.gender && (
+                            <small style={{ color: '#28a745', marginTop: '0.25rem', display: 'block' }}>
+                                ✓ Jenis kelamin: {profile.gender}
+                            </small>
+                        )}
                     </div>
 
                     <div>
@@ -220,13 +252,18 @@ const Profile = () => {
                             name="dateOfBirth"
                             value={profile.dateOfBirth}
                             onChange={handleChange}
-                            style={{ 
-                                width: '100%', 
-                                padding: '10px', 
-                                border: '1px solid #ddd', 
+                            style={{
+                                width: '100%',
+                                padding: '10px',
+                                border: '1px solid #ddd',
                                 borderRadius: '6px'
                             }}
                         />
+                        {profile.dateOfBirth && (
+                            <small style={{ color: '#28a745', marginTop: '0.25rem', display: 'block' }}>
+                                ✓ Tanggal lahir: {new Date(profile.dateOfBirth).toLocaleDateString('id-ID')}
+                            </small>
+                        )}
                     </div>
 
                     <div style={{ display: 'flex', gap: '1rem' }}>

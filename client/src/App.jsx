@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Form from './pages/Form';
-import Cancel from './pages/Cancel';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminLogin from './pages/AdminLogin';
@@ -18,7 +17,8 @@ import OperatorQuota from './pages/OperatorQuota';
 import PrivateRoute from './components/PrivateRoute';
 import OperatorPrivateRoute from './components/OperatorPrivateRoute';
 import UserPrivateRoute from './components/UserPrivateRoute';
-import History from './pages/History';
+import ReservationHistory from './pages/ReservationHistory';
+import Profile from './pages/Profile';
 
 function App() {
     return (
@@ -27,8 +27,8 @@ function App() {
                 {/* User Routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/form" element={<UserPrivateRoute element={<Form />} />} />
-                <Route path="/cancel" element={<UserPrivateRoute element={<Cancel />} />} />
-                <Route path="/history" element={<UserPrivateRoute element={<History />} />} />
+                <Route path="/history" element={<UserPrivateRoute element={<ReservationHistory />} />} />
+                <Route path="/profile" element={<UserPrivateRoute element={<Profile />} />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 

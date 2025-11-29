@@ -258,27 +258,7 @@ const AdminSchedules = () => {
                     </section>
                 )}
 
-                <section style={{ border: '1px solid #eee', padding: '1.5rem', borderRadius: '8px', backgroundColor: '#f9f9f9' }}>
-                    <h3>Pemberitahuan Cuti Dokter</h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
-                        <label>
-                            Pilih Dokter:
-                            <select value={vacationDoctor} onChange={(e) => setVacationDoctor(e.target.value)} style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}>
-                                <option value="">-- Pilih Dokter --</option>
-                                {doctors.map(doctor => (
-                                    <option key={doctor._id} value={doctor._id}>{doctor.name}</option>
-                                ))}
-                            </select>
-                        </label>
-                        <label>
-                            Tanggal Cuti:
-                            <input type="date" value={vacationDate} onChange={(e) => setVacationDate(e.target.value)} style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }} />
-                        </label>
-                        <button onClick={handleSendVacationNotification} style={{ padding: '10px 15px', background: '#17a2b8', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
-                            Kirim Pemberitahuan WhatsApp
-                        </button>
-                    </div>
-                </section>
+
             </main>
             {showPopup && (
                 <PopUp
