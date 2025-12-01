@@ -33,12 +33,12 @@ const Form = () => {
             }
             const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/reservations`, formData, config);
             setSubmissionResult(response.data);
-            setPopupMessage('Reservasi berhasil!');
+            setPopupMessage('Reservasi berhasil dibuat!');
             setPopupType('success');
             setShowPopup(true);
         } catch (error) {
             console.error('Error submitting form:', error);
-            const errorMessage = error.response?.data?.msg || 'Terjadi kesalahan saat submit formulir.';
+            const errorMessage = error.response?.data?.msg || 'Terjadi kesalahan saat membuat reservasi.';
             setPopupMessage(errorMessage);
             setPopupType('error');
             setShowPopup(true);
@@ -61,70 +61,80 @@ const Form = () => {
     };
 
     return (
-        <div>
+        <div className="fade-in">
             <Navbar />
-            <main style={{ padding: '2rem' }}>
-                <h2>Formulir Reservasi</h2>
+            <main>
+                <h1>Formulir Reservasi Poli Anak</h1>
                 {!submissionResult ? (
-                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '500px', margin: '0 auto' }}>
+                    <form onSubmit={handleSubmit}>
+                        <h2 className="text-center mb-3">Informasi Pasien</h2>
                         <label>
                             Nama Pasien:
-                            <input type="text" name="patientName" value={formData.patientName} onChange={handleChange} required />
-                        </label>
-                        <label>
-                            Nama Orang Tua/Wali:
-                            <input type="text" name="parentName" value={formData.parentName} onChange={handleChange} required />
-                        </label>
-                        <label>
-                            No. KTP Orang Tua/Wali:
-                            <input type="number" name="parentKTP" value={formData.parentKTP} onChange={handleChange} required />
-                        </label>
-                        <label>
-                            Alamat:
-                            <textarea name="address" value={formData.address} onChange={handleChange} required></textarea>
-                        </label>
-                        <label>
-                            No HP:
-                            <input type="number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
+                            <input type="text" name="patientName" value={formData.patientName} onChange={handleChange} required placeholder="Masukkan nama lengkap pasien" />
                         </label>
                         <label>
                             Tanggal Lahir Pasien:
                             <input type="date" name="patientDOB" value={formData.patientDOB} onChange={handleChange} required />
                         </label>
+
+                        <h2 className="text-center mb-3 mt-3">Informasi Orang Tua/Wali</h2>
+                        <label>
+                            Nama Orang Tua/Wali:
+                            <input type="text" name="parentName" value={formData.parentName} onChange={handleChange} required placeholder="Masukkan nama orang tua atau wali" />
+                        </label>
+                        <label>
+                            No. KTP Orang Tua/Wali:
+                            <input type="number" name="parentKTP" value={formData.parentKTP} onChange={handleChange} required placeholder="Masukkan nomor KTP" />
+                        </label>
+                        <label>
+                            Alamat Lengkap:
+                            <textarea name="address" value={formData.address} onChange={handleChange} required rows="3" placeholder="Masukkan alamat lengkap"></textarea>
+                        </label>
+                        <label>
+                            No. HP:
+                            <input type="number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required placeholder="Masukkan nomor HP aktif" />
+                        </label>
+
+                        <h2 className="text-center mb-3 mt-3">Jadwal Pemeriksaan</h2>
                         <label>
                             Tanggal Pemeriksaan:
-                            <input type="date" name="appointmentDate" value={formData.appointmentDate} onChange={handleChange} required />
+                            <input type="date" name="appointmentDate" value={formData.appointmentDate} onChange={handleChange} required min={new Date().toISOString().split('T')[0]} />
                         </label>
-                        <button type="submit" style={{ padding: '10px 20px', background: '#007bff', color: 'white', border: 'none', cursor: 'pointer' }}>
-                            Submit Reservasi
+
+                        <button type="submit" className="btn-primary mt-3">
+                            Buat Reservasi
                         </button>
                     </form>
                 ) : (
-                    <div id="reservation-details" style={{ border: '1px solid #ccc', padding: '2rem', maxWidth: '600px', margin: '2rem auto', textAlign: 'center' }}>
-                        <h3>Detail Reservasi Anda:</h3>
-                        <p><strong>Poli Anak</strong></p>
-                        <p>Nama Dokter: {submissionResult.doctor?.name || 'Menyesuaikan jadwal'}</p> {/* Anda perlu populasi dokter di server */}
-                        <p>No Antrian: {submissionResult.queueNumber}</p>
-                        <p>ID Antrian: {submissionResult.reservationId}</p>
-                        <p>Nama Pasien: {submissionResult.patientName}</p>
-                        <p>Tanggal Lahir Pasien: {new Date(submissionResult.patientDOB).toLocaleDateString()}</p>
-                        <p>Terima kasih telah menunggu!</p>
-                        <p>Tanggal Pemeriksaan: {new Date(submissionResult.appointmentDate).toLocaleDateString()}</p>
-                        <button onClick={handlePrintDownload} style={{ padding: '10px 20px', background: '#28a745', color: 'white', border: 'none', cursor: 'pointer', marginTop: '1rem' }}>
-                            Cetak / Download Gambar
+                    <div id="reservation-details">
+                        <h3>✅ Reservasi Berhasil Dibuat!</h3>
+                        <div style={{ background: '#f8f9fa', padding: '1rem', borderRadius: '8px', margin: '1rem 0' }}>
+                            <p><strong>Poli Anak</strong></p>
+                            <p><strong>Nama Dokter:</strong> {submissionResult.doctor?.name || 'Menyesuaikan jadwal'}</p>
+                            <p><strong>No Antrian:</strong> <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3498db' }}>{submissionResult.queueNumber}</span></p>
+                            <p><strong>ID Reservasi:</strong> {submissionResult.reservationId}</p>
+                        </div>
+                        <div style={{ background: '#e3f2fd', padding: '1rem', borderRadius: '8px', margin: '1rem 0' }}>
+                            <p><strong>Nama Pasien:</strong> {submissionResult.patientName}</p>
+                            <p><strong>Tanggal Lahir:</strong> {new Date(submissionResult.patientDOB).toLocaleDateString('id-ID')}</p>
+                            <p><strong>Tanggal Pemeriksaan:</strong> {new Date(submissionResult.appointmentDate).toLocaleDateString('id-ID')}</p>
+                        </div>
+                        <p style={{ fontStyle: 'italic', color: '#27ae60' }}>Terima kasih telah melakukan reservasi. Silakan datang tepat waktu sesuai jadwal yang telah ditentukan.</p>
+                        <button onClick={handlePrintDownload} className="btn-success mt-2">
+                            📄 Cetak / Download Bukti Reservasi
                         </button>
                     </div>
                 )}
             </main>
             {showPopup && (
-                <div style={{
-                    position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                    background: popupType === 'success' ? '#d4edda' : '#f8d7da',
-                    color: popupType === 'success' ? '#155724' : '#721c24',
-                    padding: '20px', borderRadius: '5px', boxShadow: '0 0 10px rgba(0,0,0,0.3)', zIndex: 1000
-                }}>
+                <div className="popup">
+                    <h3 style={{ color: popupType === 'success' ? '#27ae60' : '#e74c3c', marginTop: 0 }}>
+                        {popupType === 'success' ? '✅ Berhasil!' : '❌ Error'}
+                    </h3>
                     <p>{popupMessage}</p>
-                    <button onClick={() => setShowPopup(false)} style={{ background: 'none', border: '1px solid #ccc', padding: '5px 10px', cursor: 'pointer' }}>Tutup</button>
+                    <button onClick={() => setShowPopup(false)} style={{ marginTop: '1rem', background: '#95a5a6', color: 'white' }}>
+                        Tutup
+                    </button>
                 </div>
             )}
             <Footer />
