@@ -71,16 +71,12 @@ exports.createReservation = async (req, res) => {
       existingReservation = await Reservation.findOne({ reservationId });
     }
 
-    // Get current queue number for the day
-    let currentQueue = await Queue.findOne({ date: startOfDay });
-    if (!currentQueue) {
-      currentQueue = new Queue({ date: startOfDay, lastNumber: 0 });
-      await currentQueue.save();
-    }
-
-    // Increment queue number
-    currentQueue.lastNumber += 1;
-    await currentQueue.save();
+    // Get current queue number for the day (atomic update)
+    let currentQueue = await Queue.findOneAndUpdate(
+      { date: startOfDay },
+      { $inc: { lastNumber: 1 } },
+      { new: true, upsert: true }
+    );
 
     const queueNumber = `A${currentQueue.lastNumber}`;
 
