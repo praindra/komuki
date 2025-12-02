@@ -11,8 +11,8 @@ const OperatorLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`, { username, password });
-            
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`, { usernameOrEmail: username, password });
+
             // Check if user is operator
             if (response.data.role !== 'operator' && response.data.role !== 'admin') {
                 setError('Anda tidak memiliki akses sebagai operator.');
@@ -21,7 +21,7 @@ const OperatorLogin = () => {
 
             localStorage.setItem('adminToken', response.data.token);
             localStorage.setItem('userRole', response.data.role);
-            
+
             // Redirect based on role
             if (response.data.role === 'admin') {
                 navigate('/admin');

@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const reservationController = require("../controllers/reservationController");
-const { protect, admin } = require("../middleware/authMiddleware"); // Import middleware otentikasi dan otorisasi
+const {
+  protect,
+  admin,
+  adminOrOperator,
+} = require("../middleware/authMiddleware"); // Import middleware otentikasi dan otorisasi
 
 // @route   POST api/reservations
 // @desc    Create a new reservation
@@ -27,8 +31,13 @@ router.get("/my-history", protect, reservationController.getMyHistory);
 
 // @route   GET api/reservations
 // @desc    Get all reservations (with filters)
-// @access  Private (Admin)
-router.get("/", protect, admin, reservationController.getReservations);
+// @access  Private (Admin or Operator)
+router.get(
+  "/",
+  protect,
+  adminOrOperator,
+  reservationController.getReservations
+);
 
 // @route   DELETE api/reservations/delete-by-date
 // @desc    Delete reservations by date range
