@@ -109,7 +109,7 @@ const Home = () => {
                         opacity: 0.95,
                         color: '#e0e0e0'
                     }}>
-                        Rumah Sakit Bina Bhakti Husada
+                        Rumah Sakit Bhina Bhakti Husada
                     </p>
                     <button
                         onClick={handleFormButtonClick}

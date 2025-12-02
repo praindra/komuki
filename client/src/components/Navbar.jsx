@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, LogOut, User, FileText, History, Home } from 'lucide-react';
+import logo from '../assets/logo-bhakti-husada-png-30.jpg';
 
 const Navbar = () => {
     const navigate = useNavigate();
@@ -57,7 +58,7 @@ const Navbar = () => {
                             fontSize: '1.2rem',
                             boxShadow: '0 4px 15px rgba(0, 212, 255, 0.3)'
                         }}>
-                            RS
+                            <img src={logo} alt="Logo" style={{ width: '28px', height: '28px', borderRadius: '6px' }} />
                         </div>
                         <div>
                             <div style={{
@@ -74,7 +75,7 @@ const Navbar = () => {
                                 letterSpacing: '0.1em',
                                 textTransform: 'uppercase'
                             }}>
-                                Bina Bhakti
+                                Bhina Bhakti
                             </div>
                         </div>
                     </Link>

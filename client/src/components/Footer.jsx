@@ -271,7 +271,7 @@ const Footer = () => {
                         margin: '0 0 0.5rem 0',
                         letterSpacing: '0.05em'
                     }}>
-                        &copy; {new Date().getFullYear()} <span style={{ color: '#00d4ff' }}>RS BINA BHAKTI HUSADA</span>. All rights reserved.
+                        &copy; {new Date().getFullYear()} <span style={{ color: '#00d4ff' }}>RS BHINA BHAKTI HUSADA</span>. All rights reserved.
                     </p>
                 </div>
             </div>
