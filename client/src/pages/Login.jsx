@@ -68,7 +68,7 @@ const Login = () => {
                     justify-content: center;
                     align-items: center;
                     padding: 2rem;
-                    background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+                    
                     position: relative;
                     overflow: hidden;
                 }

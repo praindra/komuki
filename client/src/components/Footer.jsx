@@ -64,7 +64,7 @@ const Footer = () => {
                         }}>Media Sosial</h4>
                         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', gap: '1rem', justifyContent: 'center' }}>
                             <li>
-                                <a href="#" style={{
+                                <a href="https://www.facebook.com/rsbhinabhaktihusada" style={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -90,7 +90,7 @@ const Footer = () => {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" style={{
+                                <a href="https://www.instagram.com/rsbhinabhaktihusada?igsh=Z2pmMW5seXdqcGww" style={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -116,7 +116,7 @@ const Footer = () => {
                                 </a>
                             </li>
                             <li>
-                                <a href="#" style={{
+                                <a href="https://www.facebook.com/rsbhinabhaktihusada" style={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -183,7 +183,7 @@ const Footer = () => {
                                 fontSize: '0.95rem'
                             }}>
                                 <Phone size={18} style={{ color: '#00d4ff', flexShrink: 0 }} />
-                                <span>0812-3456-7890</span>
+                                <span>(0295) 6980 777 / 999</span>
                             </p>
                             <p style={{
                                 margin: 0,
@@ -193,7 +193,7 @@ const Footer = () => {
                                 fontSize: '0.95rem'
                             }}>
                                 <Mail size={18} style={{ color: '#00d4ff', flexShrink: 0 }} />
-                                <span>info@kliniksehat.com</span>
+                                <span>rumahsakit@bhinabhaktihusada.co.id</span>
                             </p>
                         </div>
                     </div>
@@ -254,7 +254,7 @@ const Footer = () => {
                             lineHeight: '1.5'
                         }}>
                             <MapPin size={18} style={{ color: '#00d4ff', flexShrink: 0 }} />
-                            <span>Jl. Contoh No. 123<br />Kota Contoh, Kode Pos 12345</span>
+                            <span>Jl. Raya Rembang-Blora, Km. 4 Rembang, Jawa Tengah</span>
                         </p>
                     </div>
                 </div>
