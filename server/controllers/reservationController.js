@@ -144,22 +144,19 @@ exports.getDailyStats = async (req, res) => {
     const quota = await Quota.findOne();
     const limit = quota ? quota.limit : 0;
 
-    // Get active doctors and their schedules
-    const activeDoctors = await Doctor.find({
-      "schedule.isActive": true,
-    }).select("name schedule");
+    // Get all doctors and their schedules
+    const doctors = await Doctor.find().select("name schedule");
 
     res.json({
       currentQueue: currentQueueNumber,
       queueLimit: limit,
-      doctors: activeDoctors.map((doc) => ({
+      doctors: doctors.map((doc) => ({
         name: doc.name,
-        schedule: doc.schedule
-          .filter((s) => s.isActive)
-          .map((s) => ({
-            day: s.day,
-            time: s.time,
-          })),
+        schedule: doc.schedule.map((s) => ({
+          day: s.day,
+          time: s.time,
+          isActive: s.isActive,
+        })),
       })),
     });
   } catch (err) {

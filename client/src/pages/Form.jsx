@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { CheckCircle, AlertCircle, Download, ArrowRight } from 'lucide-react';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const Form = () => {
     const [formData, setFormData] = useState({
@@ -17,7 +18,8 @@ const Form = () => {
     const [submissionResult, setSubmissionResult] = useState(null);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState('');
-    const [popupType, setPopupType] = useState(''); // 'success' or 'error'
+    const [popupType, setPopupType] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,6 +27,7 @@ const Form = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         try {
             const token = localStorage.getItem('userToken');
             const config = {};
@@ -42,6 +45,8 @@ const Form = () => {
             setPopupMessage(errorMessage);
             setPopupType('error');
             setShowPopup(true);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -60,82 +65,507 @@ const Form = () => {
         }
     };
 
+    const handleReset = () => {
+        setSubmissionResult(null);
+        setFormData({
+            patientName: '',
+            parentName: '',
+            parentKTP: '',
+            address: '',
+            phoneNumber: '',
+            patientDOB: '',
+            appointmentDate: '',
+        });
+    };
+
     return (
-        <div className="fade-in">
-            <Navbar />
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <style>{`
+                * {
+                    box-sizing: border-box;
+                }
+                
+                main {
+                    flex: 1;
+                    padding: '4rem 2rem';
+                    background: 'linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%)';
+                    max-width: '1000px';
+                    margin: '0 auto';
+                    width: '100%';
+                }
+
+                h1 {
+                    text-align: center;
+                    font-size: clamp(1.8rem, 4vw, 2.5rem);
+                    color: #0f2027;
+                    margin-bottom: 2rem;
+                    font-weight: 700;
+                    
+                }
+
+                h2 {
+                    font-size: 1.3rem;
+                    color: #0099ff;
+                    margin: 2rem 0 1.5rem 0;
+                    padding-bottom: 1rem;
+                    border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    font-weight: 600;
+                }
+
+                form {
+                    background: white;
+                    padding: 3rem;
+                    border-radius: 16px;
+                    box-shadow: 0 12px 40px rgba(0, 212, 255, 0.1);
+                    border: 1px solid rgba(0, 212, 255, 0.1);
+                }
+
+                label {
+                    display: block;
+                    margin-bottom: 1.5rem;
+                    font-weight: 600;
+                    color: #0f2027;
+                    font-size: 0.95rem;
+                }
+
+                input, textarea {
+                    width: 100%;
+                    padding: 12px 16px;
+                    margin-top: 0.75rem;
+                    border: 2px solid #e0e0e0;
+                    border-radius: 10px;
+                    font-size: 0.95rem;
+                    transition: all 0.3s ease;
+                    font-family: inherit;
+                }
+
+                input:focus, textarea:focus {
+                    outline: none;
+                    border-color: #00d4ff;
+                    background: rgba(0, 212, 255, 0.05);
+                    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+                }
+
+                textarea {
+                    resize: vertical;
+                    min-height: 100px;
+                }
+
+                .btn-primary {
+                    background: linear-gradient(135deg, #00d4ff, #0099ff);
+                    color: white;
+                    border: none;
+                    padding: 14px 36px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 8px 24px rgba(0, 212, 255, 0.3);
+                    width: 100%;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5rem;
+                    margin-top: 2rem;
+                }
+
+                .btn-primary:hover:not(:disabled) {
+                    transform: translateY(-3px);
+                    box-shadow: 0 12px 32px rgba(0, 212, 255, 0.4);
+                }
+
+                .btn-primary:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+
+                .btn-success {
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    color: white;
+                    border: none;
+                    padding: 14px 36px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                .btn-success:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 12px 32px rgba(16, 185, 129, 0.4);
+                }
+
+                .mt-3 {
+                    margin-top: 1.5rem;
+                }
+
+                .mt-2 {
+                    margin-top: 1rem;
+                }
+
+                .mb-3 {
+                    margin-bottom: 1.5rem;
+                }
+
+                .text-center {
+                    text-align: center;
+                }
+
+                .popup {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    padding: 2.5rem;
+                    border-radius: 16px;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+                    z-index: 2000;
+                    max-width: 450px;
+                    width: 90%;
+                    border-top: 4px solid;
+                    animation: slideUp 0.3s ease;
+                }
+
+                .popup.success {
+                    border-top-color: #10b981;
+                }
+
+                .popup.error {
+                    border-top-color: #ef4444;
+                }
+
+                @keyframes slideUp {
+                    from {
+                        opacity: 0;
+                        transform: translate(-50%, -40%);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translate(-50%, -50%);
+                    }
+                }
+
+                .popup-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.4);
+                    z-index: 1999;
+                }
+
+                #reservation-details {
+                    background: white;
+                    padding: 3rem;
+                    border-radius: 16px;
+                    box-shadow: 0 12px 40px rgba(0, 212, 255, 0.1);
+                    border: 1px solid rgba(0, 212, 255, 0.1);
+                }
+
+                #reservation-details h3 {
+                    font-size: 1.8rem;
+                    color: #10b981;
+                    margin-bottom: 2rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                }
+
+                .result-section {
+                    margin-bottom: 2rem;
+                    padding: 1.5rem;
+                    border-radius: 12px;
+                    border-left: 4px solid;
+                }
+
+                .result-section.primary {
+                    background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(0, 153, 255, 0.05));
+                    border-left-color: #00d4ff;
+                }
+
+                .result-section.secondary {
+                    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05));
+                    border-left-color: #10b981;
+                }
+
+                .result-section p {
+                    margin: 0.75rem 0;
+                    color: #0f2027;
+                    font-size: 0.95rem;
+                }
+
+                .result-section strong {
+                    color: #0099ff;
+                }
+
+                .queue-number {
+                    font-size: 2.5rem;
+                    font-weight: bold;
+                    color: #00d4ff;
+                    text-shadow: 0 2px 8px rgba(0, 212, 255, 0.2);
+                }
+
+                .success-message {
+                    font-style: italic;
+                    color: #10b981;
+                    margin: 2rem 0;
+                    padding: 1.5rem;
+                    background: rgba(16, 185, 129, 0.1);
+                    border-radius: 10px;
+                    border-left: 4px solid #10b981;
+                }
+
+                .button-group {
+                    display: flex;
+                    gap: 1rem;
+                    margin-top: 2rem;
+                    flex-wrap: wrap;
+                }
+
+                .button-group button {
+                    flex: 1;
+                    min-width: 200px;
+                }
+
+                @media (max-width: 768px) {
+                    form {
+                        padding: 2rem;
+                    }
+
+                    #reservation-details {
+                        padding: 2rem;
+                    }
+
+                    h2 {
+                        font-size: 1.1rem;
+                    }
+
+                    .button-group {
+                        flex-direction: column;
+                    }
+
+                    .button-group button {
+                        width: 100%;
+                    }
+                }
+            `}</style>
+
+                <Navbar />
             <main>
-                <h1>Formulir Reservasi Poli Anak</h1>
+                <h1>📋 Formulir Reservasi Poli Anak</h1>
+
                 {!submissionResult ? (
                     <form onSubmit={handleSubmit}>
-                        <h2 className="text-center mb-3">Informasi Pasien</h2>
+                        <h2>👤 Informasi Pasien</h2>
                         <label>
                             Nama Pasien:
-                            <input type="text" name="patientName" value={formData.patientName} onChange={handleChange} required placeholder="Masukkan nama lengkap pasien" />
+                            <input
+                                type="text"
+                                name="patientName"
+                                value={formData.patientName}
+                                onChange={handleChange}
+                                required
+                                placeholder="Masukkan nama lengkap pasien"
+                            />
                         </label>
                         <label>
                             Tanggal Lahir Pasien:
-                            <input type="date" name="patientDOB" value={formData.patientDOB} onChange={handleChange} required />
+                            <input
+                                type="date"
+                                name="patientDOB"
+                                value={formData.patientDOB}
+                                onChange={handleChange}
+                                required
+                            />
                         </label>
 
-                        <h2 className="text-center mb-3 mt-3">Informasi Orang Tua/Wali</h2>
+                        <h2>👨‍👩‍👧 Informasi Orang Tua/Wali</h2>
                         <label>
                             Nama Orang Tua/Wali:
-                            <input type="text" name="parentName" value={formData.parentName} onChange={handleChange} required placeholder="Masukkan nama orang tua atau wali" />
+                            <input
+                                type="text"
+                                name="parentName"
+                                value={formData.parentName}
+                                onChange={handleChange}
+                                required
+                                placeholder="Masukkan nama orang tua atau wali"
+                            />
                         </label>
                         <label>
                             No. KTP Orang Tua/Wali:
-                            <input type="number" name="parentKTP" value={formData.parentKTP} onChange={handleChange} required placeholder="Masukkan nomor KTP" />
+                            <input
+                                type="number"
+                                name="parentKTP"
+                                value={formData.parentKTP}
+                                onChange={handleChange}
+                                required
+                                placeholder="Masukkan nomor KTP"
+                            />
                         </label>
                         <label>
                             Alamat Lengkap:
-                            <textarea name="address" value={formData.address} onChange={handleChange} required rows="3" placeholder="Masukkan alamat lengkap"></textarea>
+                            <textarea
+                                name="address"
+                                value={formData.address}
+                                onChange={handleChange}
+                                required
+                                placeholder="Masukkan alamat lengkap"
+                            ></textarea>
                         </label>
                         <label>
                             No. HP:
-                            <input type="number" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required placeholder="Masukkan nomor HP aktif" />
+                            <input
+                                type="number"
+                                name="phoneNumber"
+                                value={formData.phoneNumber}
+                                onChange={handleChange}
+                                required
+                                placeholder="Masukkan nomor HP aktif"
+                            />
                         </label>
 
-                        <h2 className="text-center mb-3 mt-3">Jadwal Pemeriksaan</h2>
+                        <h2>📅 Jadwal Pemeriksaan</h2>
                         <label>
                             Tanggal Pemeriksaan:
-                            <input type="date" name="appointmentDate" value={formData.appointmentDate} onChange={handleChange} required min={new Date().toISOString().split('T')[0]} />
+                            <input
+                                type="date"
+                                name="appointmentDate"
+                                value={formData.appointmentDate}
+                                onChange={handleChange}
+                                required
+                                min={new Date().toISOString().split('T')[0]}
+                            />
                         </label>
 
-                        <button type="submit" className="btn-primary mt-3">
-                            Buat Reservasi
+                        <button type="submit" className="btn-primary" disabled={isLoading}>
+                            {isLoading ? 'Memproses...' : 'Buat Reservasi'}
+                            {!isLoading && <ArrowRight size={20} />}
                         </button>
                     </form>
                 ) : (
                     <div id="reservation-details">
-                        <h3>✅ Reservasi Berhasil Dibuat!</h3>
-                        <div style={{ background: '#f8f9fa', padding: '1rem', borderRadius: '8px', margin: '1rem 0' }}>
-                            <p><strong>Poli Anak</strong></p>
-                            <p><strong>Nama Dokter:</strong> {submissionResult.doctor?.name || 'Menyesuaikan jadwal'}</p>
-                            <p><strong>No Antrian:</strong> <span style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3498db' }}>{submissionResult.queueNumber}</span></p>
-                            <p><strong>ID Reservasi:</strong> {submissionResult.reservationId}</p>
+                        <h3>
+                            <CheckCircle size={32} style={{ color: '#10b981' }} />
+                            Reservasi Berhasil Dibuat!
+                        </h3>
+
+                        <div className="result-section primary">
+                            <p><strong>🏥 Poli:</strong> Poli Anak</p>
+                            <p><strong>👨‍⚕️ Nama Dokter:</strong> {submissionResult.doctor?.name || 'Menyesuaikan jadwal'}</p>
+                            <p>
+                                <strong>🔢 No Antrian:</strong>
+                                <div className="queue-number">{submissionResult.queueNumber}</div>
+                            </p>
+                            <p><strong>📌 ID Reservasi:</strong> {submissionResult.reservationId}</p>
                         </div>
-                        <div style={{ background: '#e3f2fd', padding: '1rem', borderRadius: '8px', margin: '1rem 0' }}>
-                            <p><strong>Nama Pasien:</strong> {submissionResult.patientName}</p>
-                            <p><strong>Tanggal Lahir:</strong> {new Date(submissionResult.patientDOB).toLocaleDateString('id-ID')}</p>
-                            <p><strong>Tanggal Pemeriksaan:</strong> {new Date(submissionResult.appointmentDate).toLocaleDateString('id-ID')}</p>
+
+                        <div className="result-section secondary">
+                            <p><strong>🧒 Nama Pasien:</strong> {submissionResult.patientName}</p>
+                            <p><strong>🎂 Tanggal Lahir:</strong> {new Date(submissionResult.patientDOB).toLocaleDateString('id-ID')}</p>
+                            <p><strong>📆 Tanggal Pemeriksaan:</strong> {new Date(submissionResult.appointmentDate).toLocaleDateString('id-ID')}</p>
                         </div>
-                        <p style={{ fontStyle: 'italic', color: '#27ae60' }}>Terima kasih telah melakukan reservasi. Silakan datang tepat waktu sesuai jadwal yang telah ditentukan.</p>
-                        <button onClick={handlePrintDownload} className="btn-success mt-2">
-                            📄 Cetak / Download Bukti Reservasi
-                        </button>
+
+                        <div className="success-message">
+                            ✅ Terima kasih telah melakukan reservasi. Silakan datang tepat waktu sesuai jadwal yang telah ditentukan.
+                        </div>
+
+                        <div className="button-group">
+                            <button onClick={handlePrintDownload} className="btn-success">
+                                <Download size={20} />
+                                Cetak / Download Bukti
+                            </button>
+                            <button onClick={handleReset} style={{
+                                background: 'linear-gradient(135deg, #0099ff, #0066cc)',
+                                color: 'white',
+                                border: 'none',
+                                padding: '14px 36px',
+                                fontSize: '1rem',
+                                fontWeight: '600',
+                                borderRadius: '10px',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 8px 24px rgba(0, 153, 255, 0.3)'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.transform = 'translateY(-3px)';
+                                e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 153, 255, 0.4)';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 153, 255, 0.3)';
+                            }}>
+                                Buat Reservasi Baru
+                            </button>
+                        </div>
                     </div>
                 )}
             </main>
+
             {showPopup && (
-                <div className="popup">
-                    <h3 style={{ color: popupType === 'success' ? '#27ae60' : '#e74c3c', marginTop: 0 }}>
-                        {popupType === 'success' ? '✅ Berhasil!' : '❌ Error'}
-                    </h3>
-                    <p>{popupMessage}</p>
-                    <button onClick={() => setShowPopup(false)} style={{ marginTop: '1rem', background: '#95a5a6', color: 'white' }}>
-                        Tutup
-                    </button>
-                </div>
+                <>
+                    <div className="popup-overlay" onClick={() => setShowPopup(false)}></div>
+                    <div className={`popup ${popupType}`}>
+                        <h3 style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            margin: 0,
+                            marginBottom: '1rem',
+                            color: popupType === 'success' ? '#10b981' : '#ef4444',
+                            fontSize: '1.3rem'
+                        }}>
+                            {popupType === 'success' ? (
+                                <>
+                                    <CheckCircle size={24} />
+                                    Berhasil!
+                                </>
+                            ) : (
+                                <>
+                                    <AlertCircle size={24} />
+                                    Error
+                                </>
+                            )}
+                        </h3>
+                        <p style={{ margin: '1rem 0', color: '#0f2027', fontSize: '0.95rem' }}>
+                            {popupMessage}
+                        </p>
+                        <button
+                            onClick={() => setShowPopup(false)}
+                            style={{
+                                width: '100%',
+                                marginTop: '1.5rem',
+                                background: '#95a5a6',
+                                color: 'white',
+                                border: 'none',
+                                padding: '10px 20px',
+                                borderRadius: '8px',
+                                cursor: 'pointer',
+                                fontWeight: '600',
+                                transition: 'all 0.3s ease'
+                            }}
+                            onMouseOver={(e) => {
+                                e.currentTarget.style.background = '#7f8c8d';
+                            }}
+                            onMouseOut={(e) => {
+                                e.currentTarget.style.background = '#95a5a6';
+                            }}
+                        >
+                            Tutup
+                        </button>
+                    </div>
+                </>
             )}
             <Footer />
         </div>
