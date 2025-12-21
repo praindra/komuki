@@ -12,7 +12,7 @@ const OperatorNavbar = () => {
     return (
         <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: '#28a745', color: 'white' }}>
             <div className="operator-clinic-name" style={{ fontWeight: 'bold' }}>
-                Klinik Sehat Operator
+                 Operator
             </div>
             <ul style={{ listStyle: 'none', display: 'flex', gap: '1rem' }}>
                 <li><Link to="/operator/schedules" style={{ color: 'white', textDecoration: 'none' }}>Kelola Jadwal</Link></li>

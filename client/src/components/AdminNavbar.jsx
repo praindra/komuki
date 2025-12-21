@@ -12,7 +12,7 @@ const AdminNavbar = () => {
     return (
         <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: '#333', color: 'white' }}>
             <div className="admin-clinic-name" style={{ fontWeight: 'bold' }}>
-                Klinik Sehat Admin
+                Admin
             </div>
             <ul style={{ listStyle: 'none', display: 'flex', gap: '1rem' }}>
                 <li><Link to="/admin" style={{ color: 'white', textDecoration: 'none' }}>Dashboard</Link></li>
