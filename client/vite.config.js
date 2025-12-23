@@ -10,6 +10,14 @@ export default defineConfig({
   server: {
     open: true, // Otomatis membuka browser saat dev server dimulai
     port: 5173, // Pastikan menggunakan port yang konsisten
+    // Proxy API requests to the backend server to avoid CORS and 404 from Vite
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
   // Konfigurasi fallback untuk SPA
   // Ini penting untuk deployment agar server selalu menyajikan index.html untuk rute yang tidak dikenal

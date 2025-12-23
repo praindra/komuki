@@ -26,10 +26,16 @@ const UserSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
+  resetPasswordToken: {
+    type: String,
+  },
+  resetPasswordExpires: {
+    type: Date,
+  },
   role: {
     type: String,
     default: "user",
-    enum: ["user", "admin", "operator"],
+    enum: ["user", "admin", "operator", "superadmin"],
   },
   fullName: {
     type: String,

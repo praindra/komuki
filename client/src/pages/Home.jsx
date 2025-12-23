@@ -3,6 +3,7 @@ import { Users, Clock, ChevronRight, Activity } from 'lucide-react';
 import profilImage from '../assets/profil-2048x660.jpg';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import FeedbackTable from '../components/FeedbackTable';
 
 const Home = () => {
     const [stats, setStats] = useState({
@@ -383,7 +384,11 @@ const Home = () => {
                             </p>
                         </div>
                     )}
-                    <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                    <div style={{ marginTop: '3rem' }}>
+                        {/* Feedback list (public) shown below doctor schedules */}
+                        <FeedbackTable />
+
+                        <div style={{ textAlign: 'center', marginTop: '3rem' }}>
                         <button
                             onClick={handleFormButtonClick}
                             style={{
@@ -415,6 +420,7 @@ const Home = () => {
                             Isi Formulir Reservasi
                             <ChevronRight size={20} />
                         </button>
+                        </div>
                     </div>
                 </section>
             </main>

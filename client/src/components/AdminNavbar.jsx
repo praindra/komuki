@@ -20,6 +20,10 @@ const AdminNavbar = () => {
                 <li><Link to="/admin/schedules" style={{ color: 'white', textDecoration: 'none' }}>Kelola Jadwal</Link></li>
                 <li><Link to="/admin/queues" style={{ color: 'white', textDecoration: 'none' }}>Kelola Antrian</Link></li>
                 <li><Link to="/admin/quota" style={{ color: 'white', textDecoration: 'none' }}>Kuota/Limit</Link></li>
+                <li><Link to="/admin/feedbacks" style={{ color: 'white', textDecoration: 'none' }}>Kelola Pesan</Link></li>
+                {localStorage.getItem('userRole') === 'superadmin' && (
+                    <li><Link to="/admin/super" style={{ color: 'white', textDecoration: 'none' }}>Kelola Admin</Link></li>
+                )}
                 <li><button onClick={handleLogout} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 0 }}>Logout</button></li>
             </ul>
         </nav>

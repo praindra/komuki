@@ -10,9 +10,11 @@ const cron = require("node-cron");
 const authRoutes = require("./routes/authRoutes");
 const reservationRoutes = require("./routes/reservationRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
+const feedbackRoutes = require("./routes/feedbackRoutes");
 const queueRoutes = require("./routes/queueRoutes");
 const quotaRoutes = require("./routes/quotaRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const superAdminRoutes = require("./routes/superAdminRoutes");
 const userRoutes = require("./routes/userRoutes");
 
 // Import Utilities & Middleware
@@ -47,6 +49,8 @@ app.use("/api/queues", queueRoutes);
 app.use("/api/quota", quotaRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/feedback", feedbackRoutes);
+app.use("/api/superadmin", superAdminRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");

@@ -42,7 +42,7 @@ const protect = async (req, res, next) => {
 };
 
 const admin = (req, res, next) => {
-  if (req.user && req.user.role === "admin") {
+  if (req.user && (req.user.role === "admin" || req.user.role === "superadmin")) {
     next();
   } else {
     res.status(403).json({ msg: "Tidak terotorisasi sebagai admin." });
@@ -50,11 +50,19 @@ const admin = (req, res, next) => {
 };
 
 const adminOrOperator = (req, res, next) => {
-  if (req.user && (req.user.role === "admin" || req.user.role === "operator")) {
+  if (req.user && (req.user.role === "admin" || req.user.role === "operator" || req.user.role === "superadmin")) {
     next();
   } else {
     res.status(403).json({ msg: "Tidak terotorisasi." });
   }
 };
 
-module.exports = { protect, admin, adminOrOperator };
+const superAdmin = (req, res, next) => {
+  if (req.user && req.user.role === "superadmin") {
+    next();
+  } else {
+    res.status(403).json({ msg: "Tidak terotorisasi sebagai super admin." });
+  }
+};
+
+module.exports = { protect, admin, adminOrOperator, superAdmin };

@@ -360,6 +360,9 @@ const Login = () => {
                         Belum punya akun?{' '}
                         <Link to="/register">Daftar di sini</Link>
                     </div>
+                    <div style={{ marginTop: 12, textAlign: 'center' }}>
+                        <Link to="/forgot-password">Lupa password?</Link>
+                    </div>
                 </div>
             </main>
 <Footer />

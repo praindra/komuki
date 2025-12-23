@@ -142,47 +142,15 @@ const Footer = () => {
                                 </a>
                             </li>
                         </ul>
-                    </div>
-
-                    {/* Contact Section */}
-                    <div style={{
-                        padding: '2rem',
-                        borderRadius: '12px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        backdropFilter: 'blur(10px)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)',
-                        transition: 'all 0.3s ease'
-                    }}
-                    onMouseOver={(e) => {
-                        e.currentTarget.style.background = 'rgba(0, 212, 255, 0.1)';
-                        e.currentTarget.style.transform = 'translateY(-5px)';
-                        e.currentTarget.style.borderColor = 'rgba(0, 212, 255, 0.5)';
-                    }}
-                    onMouseOut={(e) => {
-                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                    }}>
-                        <h4 style={{
-                            marginBottom: '1.5rem',
-                            fontSize: '1.1rem',
-                            fontWeight: '600',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.1em',
-                            background: 'linear-gradient(135deg, #00d4ff, #0099ff)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text'
-                        }}>Hubungi Kami</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                             <p style={{
                                 margin: 0,
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '0.75rem',
-                                fontSize: '0.95rem'
+                                fontSize: '0.9rem'
                             }}>
-                                <Phone size={18} style={{ color: '#00d4ff', flexShrink: 0 }} />
+                                <Phone size={16} style={{ color: '#00d4ff', flexShrink: 0 }} />
                                 <span>(0295) 6980 777 / 999</span>
                             </p>
                             <p style={{
@@ -190,13 +158,15 @@ const Footer = () => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '0.75rem',
-                                fontSize: '0.95rem'
+                                fontSize: '0.9rem'
                             }}>
-                                <Mail size={18} style={{ color: '#00d4ff', flexShrink: 0 }} />
+                                <Mail size={16} style={{ color: '#00d4ff', flexShrink: 0 }} />
                                 <span>rumahsakit@bhinabhaktihusada.co.id</span>
                             </p>
                         </div>
                     </div>
+
+                    {/* Feedback Section removed - now displayed on Home page */}
 
                     {/* Location Section */}
                     <div style={{

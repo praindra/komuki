@@ -13,8 +13,8 @@ const AdminLogin = () => {
         try {
             const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/auth/login`, { username, password });
             
-            // Check if user is admin
-            if (response.data.role !== 'admin') {
+            // Allow admin or superadmin to login here
+            if (response.data.role !== 'admin' && response.data.role !== 'superadmin') {
                 setError('Anda tidak memiliki akses sebagai admin.');
                 return;
             }

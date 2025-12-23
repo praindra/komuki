@@ -5,8 +5,8 @@ const PrivateRoute = ({ element }) => {
     const token = localStorage.getItem('adminToken');
     const role = localStorage.getItem('userRole');
     
-    // Only admin can access admin routes
-    if (token && role === 'admin') {
+    // Allow admin and superadmin to access admin routes
+    if (token && (role === 'admin' || role === 'superadmin')) {
         return element;
     }
     

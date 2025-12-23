@@ -4,12 +4,16 @@ import Home from './pages/Home';
 import Form from './pages/Form';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminReservations from './pages/AdminReservations';
 import AdminSchedules from './pages/AdminSchedules';
 import AdminQueues from './pages/AdminQueues';
 import AdminQuota from './pages/AdminQuota';
+import AdminFeedback from './pages/AdminFeedback';
+import SuperAdminManage from './pages/SuperAdminManage';
 import OperatorLogin from './pages/OperatorLogin';
 import OperatorSchedules from './pages/OperatorSchedules';
 import OperatorQueues from './pages/OperatorQueues';
@@ -31,6 +35,8 @@ function App() {
                 <Route path="/profile" element={<UserPrivateRoute element={<Profile />} />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
 
                 {/* Admin Routes */}
                 <Route path="/admin/login" element={<AdminLogin />} />
@@ -39,6 +45,8 @@ function App() {
                 <Route path="/admin/schedules" element={<PrivateRoute element={<AdminSchedules />} />} />
                 <Route path="/admin/queues" element={<PrivateRoute element={<AdminQueues />} />} />
                 <Route path="/admin/quota" element={<PrivateRoute element={<AdminQuota />} />} />
+                <Route path="/admin/feedbacks" element={<PrivateRoute element={<AdminFeedback />} />} />
+                <Route path="/admin/super" element={<PrivateRoute element={<SuperAdminManage />} />} />
 
                 {/* Operator Routes */}
                 <Route path="/operator/login" element={<OperatorLogin />} />
