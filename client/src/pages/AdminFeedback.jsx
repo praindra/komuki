@@ -94,33 +94,23 @@ const AdminFeedback = () => {
             {loading ? (
                 <p>Memuat...</p>
             ) : (
-                <div style={{ display: 'grid', gap: '0.75rem' }}>
+                <div style={{ display: 'grid', gap: '0.75rem'}}>
                     {feedbacks.length === 0 && <p>Tidak ada feedback.</p>}
                     {feedbacks.map(fb => (
-                        <div key={fb._id} style={{ border: '1px solid #ddd', padding: '0.75rem', borderRadius: '6px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <strong>{fb.user?.username || 'Anonim'}</strong>
-                                    <div style={{ fontSize: '0.85rem', color: '#666' }}>{fb.user?.phoneNumber || '-'}</div>
+                        <div key={fb._id} style={{ border: '1px solid #ddd', padding: '0.75rem', borderRadius: '6px', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: '1rem'}}>
+                            <div className="card_parent" style={{ flex: 1}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+                                    <div>
+                                        <strong>{fb.user?.username || 'Anonim'}</strong>
+                                        <div style={{ fontSize: '0.85rem', color: '#666' }}>{fb.user?.phoneNumber }</div>
+                                    </div>
+                                    <div style={{ fontSize: '0.85rem', color: '#666' }}>{new Date(fb.createdAt).toLocaleString()}</div>
                                 </div>
-                                <div style={{ fontSize: '0.85rem', color: '#666' }}>{new Date(fb.createdAt).toLocaleString()}</div>
+                                <p style={{ marginTop: '0.5rem' }}>{fb.message}</p>
                             </div>
-                            <p style={{ marginTop: '0.5rem' }}>{fb.message}</p>
-
-                            <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                                <input
-                                    placeholder="Tulis pesan untuk pengguna..."
-                                    value={messages[fb._id] || ''}
-                                    onChange={(e) => setMessages(prev => ({ ...prev, [fb._id]: e.target.value }))}
-                                    style={{ flex: 1, padding: '0.4rem' }}
-                                />
-                                <button onClick={() => handleSend(fb._id)} disabled={sendingId === fb._id} style={{ padding: '0.4rem 0.8rem' }}>
-                                    {sendingId === fb._id ? 'Mengirim...' : 'Kirim Pesan'}
-                                </button>
-                                <button onClick={() => handleDelete(fb._id)} style={{ padding: '0.4rem 0.8rem', background: '#ff4d4f', color: 'white', border: 'none', borderRadius: '4px' }}>
-                                    Hapus
-                                </button>
-                            </div>
+                            <button onClick={() => handleDelete(fb._id)} style={{ padding: '0.4rem 0.8rem', background: '#ff4d4f', color: 'white', border: 'none', borderRadius: '4px', marginLeft: '0.5rem', height: 'fit-content'}}>
+                                Hapus
+                            </button>
                         </div>
                     ))}
                 </div>
